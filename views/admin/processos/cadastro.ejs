@@ -1,0 +1,127 @@
+<%- include ('../../partials/header.ejs'); %>
+
+<div class="container">
+  <br />
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Novo Processo</li>
+  </ol>
+
+  <div class="alert alert-success" id="acerto" style="display:none;"><strong>Processo cadastrado com <strong>sucesso!</strong></div>
+  <div class="alert alert-danger"  id="erro" style="display:none;"><strong>Erro! O administrador já foi avisado!</strong></div> 
+
+  <div class="row justify-content-center" style="margin-top:-55px">
+    <div class="col-lg-12">
+      <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-body">
+          <form name="frm" id="frm" method="POST">
+            <input type="hidden" name="cliente" id="cliente" value="<%=cliente.id%>">
+            <div class="form-group"><label class="small mb-1">Cliente</label><input class="form-control py-4" id="cliente" type="text" value="<%=cliente.nome%>" readonly /></div>
+            <div class="form-group"><label class="small mb-1">Nome do Processo</label><input class="form-control py-4" id="titulo" name="titulo" type="text" placeholder="Informe o Título" required/></div>
+            <div class="form-group"><label class="small mb-1">Número Processo</label><input class="form-control py-4" id="num_processo" name="num_processo" type="text" placeholder="Informe o Número" required/></div>
+            
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="small mb-1" for="telefone">Vara</label>
+                  <select class="form-control" id="vara" name="vara" required style="padding: 23px;">
+                    <option value="" selected>Selecione</option>
+                    <option value="Vara 1">Vara 1</option>
+                    <option value="Vara 2">Vara 2</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="small mb-1">Tipo Processo</label>
+                    <select class="form-control" id="tipo_processo" name="tipo_processo" required style="padding: 23px;">
+                        <option value="" selected>Selecione</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Trabalhista">Trabalhista</option>
+                        <option value="Familiar">Familiar</option>
+                      </select>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="small mb-1" for="telefone">Data da Petição</label>
+                  <input class="form-control py-4" id="data_peticao" name="data_peticao" type="text" placeholder="Informe a Data da Petição" required />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="small mb-1">Status do Processo</label>
+                  <select class="form-control" id="status_processo" name="status_processo" required style="padding: 23px;">
+                    <option value="" selected>Selecione</option>
+                    <option value="aberto">Aberto</option>
+                    <option value="andamento">Andamento</option>
+                    <option value="arquivado">Arquivado</option>
+                    <option value="concluido">Concluído</option>
+                    <option value="cancelado">Cancelado</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group"><label class="small mb-1">Parte Contrária</label><input class="form-control py-4" id="parte_contraria" name="parte_contraria" type="text" placeholder="Informe a Parte Contrária" required /></div>
+            <div class="form-group"><label class="small mb-1">Descrição</label>
+              <textarea id="descricao" name="descricao">
+              </textarea>
+            </div>            
+            <div class="form-group mt-4 mb-0" style="float: right;">
+                <button name="Salvar" id="Salvar" class="btn btn-primary">Salvar</button>
+                <a href="/"  class="btn btn-danger">Voltar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var situacao;
+                    jQuery('#frm').submit(function(e){
+                        e.preventDefault();
+                        var serializeDados = jQuery(this).serialize();    
+                        jQuery.ajax({
+                            url: '/processos/save',
+                            type: 'POST',
+                            data: serializeDados,
+                            dataType: 'json',
+                            success: function(response)
+                            {
+                            	if (response.situacao == 1) {	                                            					
+                            	    document.getElementById("acerto").style.display = "block";
+                                    alert("Sucesso! \nProcesso cadastrado com sucesso.");
+                            		document.getElementById("frm").reset();
+                            	} else if (response.situacao == 2) {
+                            	   document.getElementById("erro").style.display = "block";
+                            	   document.getElementById("frm").reset();
+                                }
+                            }
+                        });
+                    });
+                }) 
+
+
+</script>
+
+
+
+<%- include ('../../partials/footer.ejs'); %>
+<script src="/tinymce/tinymce.min.js"></script>
+<script>
+  tinymce.init({
+    language: 'pt_BR',
+    selector: '#descricao',
+    plugins:[
+      'advlist autolink link image lists print preview hr searchreplace wordcount fullscreen insertdatetime media save table paste'
+    ],
+    height: 450,
+    
+  });
+</script>

@@ -1,0 +1,91 @@
+<%- include ('../../partials/header.ejs'); %>
+
+<div class="container">
+  <br />
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Nova Movimentação</li>
+  </ol>
+
+  <div class="alert alert-success" id="acerto" style="display:none;"><strong>Movimentação cadastrada com <strong>sucesso!</strong></div>
+  <div class="alert alert-danger"  id="erro" style="display:none;"><strong>Erro! O administrador já foi avisado!</strong></div> 
+
+  <div class="row justify-content-center" style="margin-top:-55px">
+    <div class="col-lg-12">
+      <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-body">
+          <form name="frm" id="frm" method="POST">
+            <input type="hidden" name="processo" id="processo" value="<%=processos.id%>">
+            <div class="form-group"><label class="small mb-1">Processo/Número</label><input class="form-control py-4" id="nome" type="text" value="<%=processos.titulo%> - <%=processos.numero%>" readonly /></div>
+            
+            
+            <div class="form-row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="small mb-1">Título</label><input class="form-control py-4" id="titulo" name="titulo" type="text" placeholder="Informe o Título" required/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="small mb-1">Data</label><input class="form-control py-4" id="data_movimento" name="data_movimento" type="text" placeholder="Informe a data" required/>
+                  </div>
+                </div>
+              </div>
+            <div class="form-group"><label class="small mb-1">Descrição</label>
+              <textarea id="observacao" name="observacao">
+              </textarea>
+            </div>            
+            <div class="form-group mt-4 mb-0" style="float: right;">
+                <button name="Salvar" id="Salvar" class="btn btn-primary">Salvar</button>
+                <a href="/"  class="btn btn-danger">Voltar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var situacao;
+                    jQuery('#frm').submit(function(e){
+                        e.preventDefault();
+                        var serializeDados = jQuery(this).serialize();    
+                        jQuery.ajax({
+                            url: '/movimentacao/save',
+                            type: 'POST',
+                            data: serializeDados,
+                            dataType: 'json',
+                            success: function(response)
+                            {
+                            	if (response.situacao == 1) {	                                            					
+                            	    document.getElementById("acerto").style.display = "block";
+                                    alert("Sucesso! \nMovimentação cadastrada com sucesso.");
+                            		document.getElementById("frm").reset();
+                            	} else if (response.situacao == 2) {
+                            	   document.getElementById("erro").style.display = "block";
+                            	   document.getElementById("frm").reset();
+                                }
+                            }
+                        });
+                    });
+                }) 
+
+
+</script>
+
+
+
+<%- include ('../../partials/footer.ejs'); %>
+<script src="/tinymce/tinymce.min.js"></script>
+<script>
+  tinymce.init({
+    language: 'pt_BR',
+    selector: '#observacao',
+    plugins:[
+      'advlist autolink link image lists print preview hr searchreplace wordcount fullscreen insertdatetime media save table paste'
+    ],
+    height: 350,
+    
+  });
+</script>

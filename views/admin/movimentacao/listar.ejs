@@ -1,0 +1,92 @@
+<%- include ('../../partials/header.ejs'); %>
+<div class="container-fluid">
+    <br>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1" style="margin-top: 13px;"></i> Movimentações 
+            <!--a href="/processos/novo" class="btn btn-primary" style="float: right;">Novo Processo</a-->
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>PROCESSO/NÚMERO</th>
+                            <th>TÍTULO</th>
+                            <th>DATA</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% movimentacao.forEach(movimentacoes => { %>
+                        <tr>
+                            <td class="text-left"><%= movimentacoes.processo.titulo %> / <%= movimentacoes.processo.numero %></td>
+                            <td class="text-left"><%= movimentacoes.titulo %></td>
+                            <td class="text-right"><%= movimentacoes.data %></td>
+                            <td class="text-center">
+                                <a title="Editar" href="<%= movimentacoes.id %>"><i class="fas fa-edit text-info"></i></a>
+                                <a title="Excluir" href="<%= movimentacoes.id %>"><i class="far fa-trash-alt text-danger"></i></a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Título do modal</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary">Salvar mudanças</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable();
+    } );
+    </script>
+    <script type="text/javascript">
+    function Excluir(val) {
+    var decisao = confirm("Deseja Excluir a Usuario Selecionada?");
+        var situacao;
+        var serializeDados = jQuery(this).serialize();    
+        jQuery.ajax({
+            url: '/clientes/excluir',
+            type: 'POST',
+            data: { id:val },
+            dataType: 'json',
+            success: function(response)
+            {
+                if (response.situacao == 1) {	                                            					
+                    alert("Sucesso! \nCliente cadastrado com sucesso.");
+                    $('#example').DataTable();
+                } 
+            }
+        });
+    };
+    /* Excliuindo a linha */
+    function deleteRow(i){
+        document.getElementById('example').deleteRow(i)
+    }
+    </script>
+    <%- include ('../../partials/footer.ejs'); %>

@@ -1,0 +1,184 @@
+<%- include ('../../partials/header.ejs'); %>
+
+<div class="container">
+  <br />
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active font-weight-bold">Dados do Cliente</li>
+  </ol>
+    <div class="row justify-content-center" style="margin-top:-55px">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-body">
+                    <div class="form-group"><label class="small mb-1">Cliente</label><input class="form-control py-4" id="cliente" type="text" value="<%=clientes.nome%>" readonly/></div>
+                    <div class="form-group"><label class="small mb-1">E-mail</label><input class="form-control py-4" id="email" type="text" value="<%=clientes.email%>" readonly/></div>
+                    <div class="form-group"><label class="small mb-1">Telefone</label><input class="form-control py-4" id="telefone" type="text" value="<%=clientes.telefone%>" readonly/></div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="telefone">Tipo Pessoa</label>
+                            <input class="form-control py-4" id="tipopessoa" type="text" value="<%=clientes.tipopessoa%>" readonly/>
+                        </div>
+                        </div>
+                        <div class="col-md-6">
+                        <div class="form-group">
+                            <% if (clientes.tipopessoa != "Pessoa Física") { %>
+                                <label class="small mb-1">CNPJ</label>
+                            <% } else { %>
+                                <label class="small mb-1">CPF</label>
+                            <% } %>
+                            
+                            <input class="form-control py-4" id="cpf"type="text" value="<%=clientes.cpf_cnpj%>" readonly/>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active font-weight-bold">Dados do Processo</li>
+    </ol>
+    <div class="alert alert-success" id="acerto" style="display:none;"><strong>Processo atualizado com <strong>sucesso!</strong></div>
+    <div class="alert alert-danger"  id="erro" style="display:none;"><strong>Erro! O administrador já foi avisado!</strong></div> 
+  
+    <form name="frm" id="frm" method="POST">
+        <input type="hidden" name="id" value="<%=processos.id%>">
+    <div class="row justify-content-center" style="margin-top:-55px">
+        <div class="col-lg-12">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-body">
+                <div class="form-group"><label class="small mb-1">Nome do Processo</label><input class="form-control py-4" id="titulo" name="titulo" type="text" value="<%=processos.titulo%>" required/></div>
+                <div class="form-group"><label class="small mb-1">Número Processo</label><input class="form-control py-4" id="num_processo" name="num_processo" type="text" value="<%=processos.numero%>" required/></div>
+                <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <label class="small mb-1" for="telefone">Vara</label>
+                    <select class="form-control" id="vara" name="vara" required style="padding: 23px;">
+                        <option value="vara 1" <% if (processos.vara == "vara 1") { %> selected <% } %>>Vara 1</option>
+                        <option value="vara 2" <% if (processos.vara == "vara 2") { %> selected <% } %>>Vara 2</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <label class="small mb-1">Tipo Processo</label>
+                    <select class="form-control" id="tipo_processo" name="tipo_processo" required style="padding: 23px;">
+                        <option value="criminal" <% if (processos.tipo_processo == "criminal") { %> selected <% } %>>Criminal</option>
+                        <option value="trabalhista" <% if (processos.tipo_processo == "trabalhista") { %> selected <% } %>>Trabalhista</option>
+                        <option value="familiar" <% if (processos.tipo_processo == "familiar") { %> selected <% } %>>Familiar</option>
+                      </select>
+                    </div>
+                </div>
+                </div>
+                <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <label class="small mb-1" for="telefone">Data da Petição</label>
+                    <input class="form-control py-4" id="data_peticao" name="data_peticao" type="text" value="<%=processos.data_peticao%>" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <label class="small mb-1">Status do Processo</label>
+                    <select class="form-control" id="status_processo" name="status_processo" required style="padding: 23px;">
+                        <option value="aberto" <% if (processos.status_processo == "aberto") { %> selected <% } %>>Aberto</option>
+                        <option value="andamento" <% if (processos.status_processo == "andamento") { %> selected <% } %>>Andamento</option>
+                        <option value="arquivado" <% if (processos.status_processo == "arquivado") { %> selected <% } %>>Arquivado</option>
+                        <option value="concluido" <% if (processos.status_processo == "concluido") { %> selected <% } %>>Concluído</option>
+                        <option value="cancelado" <% if (processos.status_processo == "cancelado") { %> selected <% } %>>Cancelado</option>
+                      </select>
+                    </div>
+                </div>
+                </div>
+                <div class="form-group"><label class="small mb-1">Parte Contrária</label><input class="form-control py-4" id="parte_contraria" name="parte_contraria" type="text" value="<%=processos.nome_parte_contraria%>" /></div>
+                <div class="form-group"><label class="small mb-1">Descrição</label>
+                <textarea id="descricao" name="descricao" required>
+                    <%=processos.descricao%>  
+                </textarea>
+                </div>            
+                <div class="form-group mt-4 mb-0" style="float: right;">
+                    <button name="Salvar" id="Salvar" class="btn btn-primary">Editar Processo</button>
+                    <a href="/"  class="btn btn-danger">Voltar</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</form>
+    
+<br />
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item active font-weight-bold">Movimentações</li>
+    </ol>
+
+    <div class="row justify-content-center" style="margin-top:-55px">
+        <% movimentacao.forEach(movimentacoes => { %>
+            <div class="col-lg-12">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-body">
+                        <div class="form-group"><label class="small mb-1">Título</label><input class="form-control py-4" id="cliente" type="text" value="<%= movimentacoes.titulo %>" readonly/></div>
+                        <div class="form-group"><label class="small mb-1">Data</label><input class="form-control py-4" id="titulo" name="titulo" type="text" value="<%= movimentacoes.data %>" readonly/></div>
+                        <div class="form-group"><label class="small mb-1">Observação</label>
+                            <textarea name="descricao_<%=movimentacoes.id%>" id="descricao_<%=movimentacoes.id%>">
+                                <%=movimentacoes.observacao%>  
+                            </textarea>                            
+                        </div>
+                    </div>
+                </div>   
+            </div> 
+        <% }) %>
+
+  </div>
+          <div class="form-group mt-4 mb-0" style="float: right;">
+            <a href="/"  class="btn btn-danger">Voltar</a>
+        </div>
+<%- include ('../../partials/footer.ejs'); %>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var situacao;
+        jQuery('#frm').submit(function(e){
+            e.preventDefault();
+            var serializeDados = jQuery(this).serialize();    
+            jQuery.ajax({
+                url: '/processos/update',
+                type: 'POST',
+                data: serializeDados,
+                dataType: 'json',
+                success: function(response)
+                {
+                    if (response.situacao == 1) {	                                            					
+                        document.getElementById("acerto").style.display = "block";
+                        alert("Sucesso! \nProcesso atualizado com sucesso.");
+                    } else if (response.situacao == 2) {
+                        document.getElementById("erro").style.display = "block";
+                    }
+                }
+            });
+        });
+    }) 
+</script>
+<script src="/tinymce/tinymce.min.js"></script>
+<script>
+  tinymce.init({
+    language: 'pt_BR',
+    selector: '#descricao',
+    plugins:[
+      'advlist autolink link image lists print preview hr searchreplace wordcount fullscreen insertdatetime media save table paste'
+    ],
+    height: 450,
+    
+  });
+</script>
+
+<% movimentacao.forEach(movimentacoes => { %>
+<script>
+    tinymce.init({
+        language: 'pt_BR',
+        selector: '#descricao_<%=movimentacoes.id%>',
+        height: 250,
+        readonly : 1
+        });
+    </script>
+<% }) %>

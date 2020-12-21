@@ -1,0 +1,151 @@
+<%- include ('partials/header.ejs'); %>
+                <div class="container-fluid">
+                    <br>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                    <!--div class="row">
+                        <div class="col-xl-4 col-md-8">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">CLIENTES</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-warning text-white mb-4">
+                                <div class="card-body">PROCESSOS</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-8">
+                            <div class="card bg-success text-white mb-4">
+                                <div class="card-body">AUDIÊNCIAS</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-8">
+                            <div class="card bg-danger text-white mb-4">
+                                <div class="card-body">TAREFAS AGENDADAS</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div-->
+                    <div class="card mb-4">
+                        <div class="card-header"><i class="fas fa-table mr-1"></i>ÚLTIMOS PROCESSOS</div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example" class="display" style="width:100%">
+                                    <thead> 
+                                    <tr>
+                                        <th>PROCESSO</th>
+                                        <th>VARA</th>
+                                        <th>TIPO</th>
+                                        <th>CLIENTE</th>
+                                        <th>STATUS</th>
+                                        <th>AÇÕES</th>
+                                    </tr>   
+                                    </thead>
+                                    <tbody>		
+                                    <% processos.forEach(processo => { %>    
+                                        <tr>
+                                            <td class="text-right"><%= processo.numero %></td>
+                                            <td class="text-left"><%= processo.vara %></td>		
+                                            <td class="text-left"><%= processo.tipo_processo %></td>	
+                                            <td class="text-left"><%= processo.cliente.nome %></td>			
+                                            <td class="text-left">
+                                            <% switch (processo.status_processo) {
+                                                case 'aberto' : %>
+                                                    <i class="fas fa-circle ml-1 text-warning"></i>
+                                                <% break;
+                                                case 'concluido' : %>
+                                                    <i class="fas fa-circle ml-1 text-success"></i>
+                                                <% break;
+                                                case 'arquivado' : %>
+                                                    <i class="fas fa-circle ml-1 text-dark"></i>
+                                                <% break;
+                                                case 'andamento' : %>
+                                                    <i class="fas fa-circle ml-1 text-info"></i>
+                                                <% break;
+                                                case 'cancelado' : %>
+                                                    <i class="fas fa-circle ml-1 text-danger"></i>
+                                                <% break;                                                    
+                                                } %>
+                                                <%= processo.status_processo %></td>				
+                                            <td class="text-center">
+                                                <a title="Editar" href="/processos/editar/<%= processo.id %>"><i class="fas fa-edit text-info"></i></a>
+                                                <a title="Excluir" href="javascript:" onClick='javascript:Excluir("<%= processo.id %>");deleteRow(this.parentNode.parentNode.rowIndex);'><i class="far fa-trash-alt text-danger"></i></a>
+                                                <a title="Movimentar" href="/movimentacao/novo/<%= processo.id %>"><i class="far fa-file-alt text-info ml-1"></i></a>
+                                                <a title="Enviar Arquivos" href="<%= processo.id %>"><i class="fas fa-file-upload text-primary ml-1"></i></a>
+                                                <a title="Gerar Petição" href="javascript:" onClick="javascript:pdf('<%=processo.id%>');"><i class="fab fa-product-hunt text-info ml-1"></i></a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                    </tbody>    
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<script>
+$(document).ready(function() {
+    $('#example').DataTable();
+} );
+</script>
+
+<script type="text/javascript">
+function Excluir(val) {
+    var decisao = confirm("Deseja Excluir a Usuario Selecionada?");
+        var situacao;
+        var serializeDados = jQuery(this).serialize();    
+        jQuery.ajax({
+            url: '/processos/excluir',
+            type: 'POST',
+            data: { id:val },
+            dataType: 'json',
+            success: function(response)
+            {
+                if (response.situacao == 1) {	                                            					
+                    alert("Sucesso! \nCliente excluido com sucesso.");
+                    $('#example').DataTable();
+                } 
+            }
+        });
+    };
+    /* Excliuindo a linha */
+function deleteRow(i){
+        document.getElementById('example').deleteRow(i)
+    }
+
+function pdf(val) {
+    var decisao = confirm("Deseja gerar a petição?");
+        var situacao, download;
+        jQuery.ajax({
+            url: '/processos/peticao',
+            type: 'POST',
+            data: { id:val },
+            dataType: 'json',
+            success: function(response)
+            {
+                if (response.situacao == 1) {
+                    //alert(response.download);  
+                    alert("Sucesso! \nPetição gerada com sucesso.");
+                    window.open("peticoes/" + response.arquivo)
+                } 
+            }
+        });
+    };
+    </script>
+
+<%- include ("partials/footer.ejs"); %>
