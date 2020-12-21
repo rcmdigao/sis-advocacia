@@ -5,10 +5,6 @@ const router = express.Router();
 const ejs = require("ejs");
 const pdf = require("html-pdf");
 var options = { format: 'A4', "orientation": "portrait"};
-var path = require('path');
-var fs = require('fs');
-var mime = require('mime');
-//var phantom = require('phantom'); 
 
 // Carregando o model
 const Cliente = require("../clientes/Clientes");
