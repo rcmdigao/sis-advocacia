@@ -161,8 +161,10 @@ router.post("/peticao", (req, res) => {
               // Salavando o arquivo na pasta public
               pdf.create(html,options).toFile("./public/peticoes/" + arquivo, (err, stream) => {
                 if (err) {
+                  // Erro
                   res.json({ situacao: 2 });
                 } else {
+                  // Sucesso e o nome do arquivo como resposta
                   res.json({ situacao: 1, arquivo: arquivo });
                 }
               });
@@ -170,6 +172,7 @@ router.post("/peticao", (req, res) => {
           })
         });
     } else {
+      // Erro
       res.json({ situacao: 2 });
     }
   })
